@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:jamapp/widgets/country_image.dart';
 import 'package:jamapp/widgets/splash_card.dart';
 

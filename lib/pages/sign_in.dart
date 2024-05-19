@@ -32,7 +32,7 @@ class _SignInState extends State<SignIn> {
         password: _passwordController.text.trim(),
       );
       if (FirebaseAuth.instance.currentUser != null) {
-        await Navigator.pushNamed(context, '/home');
+        await Navigator.pushNamed(context, '/tabview');
         Navigator.pop(context);
       }
     }
