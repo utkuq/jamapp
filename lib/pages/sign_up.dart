@@ -1,8 +1,59 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SignUp extends StatelessWidget {
+class SignUp extends StatefulWidget {
   const SignUp({super.key});
+
+  @override
+  State<SignUp> createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
+  // email controller
+  final _emailController = TextEditingController();
+  // şifre controller
+  final _passwordController = TextEditingController();
+  // şifre kontrol
+  final _passwordCheckController = TextEditingController();
+
+  bool passwordConfirmed() {
+    if (_passwordCheckController.text.trim() ==
+        _passwordController.text.trim()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future signUp() async {
+    if (passwordConfirmed()) {
+      try {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
+        // Kayıt başarılı olursa yönlendirme yap
+        await Navigator.pushNamed(context, '/signin');
+        Navigator.pop(context);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Kayıt başarısız: ${e.toString()}')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Şifreler uyuşmuyor')),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +66,7 @@ class SignUp extends StatelessWidget {
     Color textColor1 = const Color(0xff353047);
     //Color textColor2 = const Color(0xff6F6B7A);
     Color buttonColor = Colors.purple;
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -37,9 +89,10 @@ class SignUp extends StatelessWidget {
             const SizedBox(height: 15),
             SizedBox(height: size.height * 0.04),
             // for username and password
-            myTextField("E-mail", Colors.white, false),
-            myTextField("Şifre", Colors.black26, true),
-            myTextField("Şifre (Tekrar)", Colors.black26, true),
+            myTextField("E-mail", Colors.white, false, _emailController),
+            myTextField("Şifre", Colors.black26, true, _passwordController),
+            myTextField("Şifre (Tekrar)", Colors.black26, true,
+                _passwordCheckController),
             const SizedBox(height: 10),
             SizedBox(height: size.height * 0.04),
             Padding(
@@ -47,20 +100,23 @@ class SignUp extends StatelessWidget {
               child: Column(
                 children: [
                   // for sign in button
-                  Container(
-                    width: size.width,
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    decoration: BoxDecoration(
-                      color: buttonColor,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "Kayıt Ol",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 22,
+                  GestureDetector(
+                    onTap: signUp,
+                    child: Container(
+                      width: size.width,
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      decoration: BoxDecoration(
+                        color: buttonColor,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          "Kayıt Ol",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 22,
+                          ),
                         ),
                       ),
                     ),
@@ -70,8 +126,9 @@ class SignUp extends StatelessWidget {
                     children: [
                       Text("Zaten bir hesabınız var mı?"),
                       TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/signin');
+                        onPressed: () async {
+                          await Navigator.pushNamed(context, '/signin');
+                          Navigator.pop(context);
                         },
                         child: Text("Giriş Yapın"),
                       )
@@ -106,13 +163,19 @@ class SignUp extends StatelessWidget {
     );
   }
 
-  Container myTextField(String hint, Color color, bool type) {
+  Container myTextField(
+    String hint,
+    Color color,
+    bool type,
+    TextEditingController controller,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 25,
         vertical: 10,
       ),
       child: TextField(
+        controller: controller,
         obscureText: type,
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(

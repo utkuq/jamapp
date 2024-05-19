@@ -39,6 +39,8 @@ dependencies:
   animated_text_kit: ^4.2.2
   google_fonts: ^6.2.1
   firebase_core: ^2.31.0
+  firebase_auth: ^4.19.5
+  fluid_bottom_nav_bar: ^1.4.0
 
 dev_dependencies:
   flutter_test:

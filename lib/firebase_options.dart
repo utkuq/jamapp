@@ -87,4 +87,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'jamapp-63c8f.appspot.com',
     measurementId: 'G-4L568ZFJKT',
   );
+
 }

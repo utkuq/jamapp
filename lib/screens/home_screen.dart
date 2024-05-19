@@ -1,28 +1,41 @@
 import 'package:flutter/material.dart';
-import '../widgets/custom_button.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:jamapp/widgets/custom_card.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Home Screen'),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: true,
       ),
-      body: Center(
-        child: Column(
+      home: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text("HOME"),
+        ),
+        body: Column(
           children: [
-            CustomButton(
-              text: 'Go to Second Screen',
-              onPressed: () {
-                Navigator.pushNamed(context, '/second');
-              },
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0, top: 5.0),
+              child: Text(
+                "İtalya 🇮🇹",
+                style: GoogleFonts.sairaCondensed(fontSize: 25),
+              ),
             ),
-            CustomButton(
-              text: "Onboarding'e git",
-              onPressed: () {
-                Navigator.pushNamed(context, '/onboarding');
-              },
-            ),
+            RecipeCard(
+                title: "Test",
+                cookTime: "15",
+                rating: "10/10",
+                thumbnailUrl: "")
           ],
         ),
       ),

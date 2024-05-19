@@ -1,12 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:firebase_core/firebase_core.dart';
-import '../firebase_options.dart';
 
-
-class SignIn extends StatelessWidget {
+class SignIn extends StatefulWidget {
   const SignIn({super.key});
 
+  @override
+  State<SignIn> createState() => _SignInState();
+}
+
+class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -18,6 +21,29 @@ class SignIn extends StatelessWidget {
     Color textColor1 = const Color(0xff353047);
     //Color textColor2 = const Color(0xff6F6B7A);
     Color buttonColor = Colors.purple;
+    // email controller
+    final _emailController = TextEditingController();
+    // şifre controller
+    final _passwordController = TextEditingController();
+
+    Future signIn() async {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      if (FirebaseAuth.instance.currentUser != null) {
+        await Navigator.pushNamed(context, '/home');
+        Navigator.pop(context);
+      }
+    }
+
+    @override
+    void dispose() {
+      _emailController.dispose();
+      _passwordController.dispose();
+      super.dispose();
+    }
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -41,8 +67,8 @@ class SignIn extends StatelessWidget {
 
             SizedBox(height: size.height * 0.04),
             // for username and password
-            myTextField("E-mail", Colors.white, false),
-            myTextField("Şifre", Colors.black26, true),
+            myTextField("E-mail", Colors.white, false, _emailController),
+            myTextField("Şifre", Colors.black26, true, _passwordController),
             const SizedBox(height: 10),
             SizedBox(height: size.height * 0.04),
             Padding(
@@ -50,20 +76,23 @@ class SignIn extends StatelessWidget {
               child: Column(
                 children: [
                   // for sign in button
-                  Container(
-                    width: size.width,
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    decoration: BoxDecoration(
-                      color: buttonColor,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "Giriş Yap",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 22,
+                  GestureDetector(
+                    onTap: signIn,
+                    child: Container(
+                      width: size.width,
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      decoration: BoxDecoration(
+                        color: buttonColor,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          "Giriş Yap",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 22,
+                          ),
                         ),
                       ),
                     ),
@@ -109,13 +138,15 @@ class SignIn extends StatelessWidget {
     );
   }
 
-  Container myTextField(String hint, Color color, bool type) {
+  Container myTextField(
+      String hint, Color color, bool type, TextEditingController controller) {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 25,
         vertical: 10,
       ),
       child: TextField(
+        controller: controller,
         obscureText: type,
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(
