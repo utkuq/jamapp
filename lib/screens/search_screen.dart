@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,6 +14,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<SearchScreen> {
+  XFile? _picture;
   Future requestPermission() async {
     final permission = Permission.camera;
 
@@ -22,12 +25,19 @@ class _HomeScreenState extends State<SearchScreen> {
 
   Future openCamera() async {
     requestPermission();
-    await availableCameras().then((value) => Navigator.push(
+    final cameras = await availableCameras();
+    final XFile? picture = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => CameraScreen(
-                  cameras: value,
-                ))));
+                  cameras: cameras,
+                )));
+    //if (!context.mounted) return;
+    if (picture != null) {
+      setState(() {
+        _picture = picture;
+      });
+    }
   }
 
   @override
@@ -38,7 +48,12 @@ class _HomeScreenState extends State<SearchScreen> {
         useMaterial3: true,
       ),
       home: Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         backgroundColor: Colors.white,
+        floatingActionButton: FloatingActionButton(
+          onPressed: openCamera,
+          child: const Icon(Icons.camera_alt),
+        ),
         appBar: AppBar(
           centerTitle: true,
           title: Text(
@@ -47,9 +62,20 @@ class _HomeScreenState extends State<SearchScreen> {
           ),
         ),
         body: Center(
-          child: FloatingActionButton(
-            onPressed: openCamera,
-            child: Text("kamera"),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _picture != null
+                  ? Image.file(
+                      File(_picture!.path),
+                      width: 200,
+                      height: 200,
+                    )
+                  : const SizedBox(
+                      width: 0,
+                      height: 0,
+                    ),
+            ],
           ),
         ),
       ),

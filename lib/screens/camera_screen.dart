@@ -37,12 +37,17 @@ class _CameraPageState extends State<CameraScreen> {
     try {
       await _cameraController.setFlashMode(FlashMode.off);
       XFile picture = await _cameraController.takePicture();
-      Navigator.push(
+      await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => PreviewScreen(
                     picture: picture,
-                  )));
+                  ))).then((result) {
+        if (result != null) {
+          Navigator.pop(context, result);
+        }
+      });
+      //Navigator.pop(context);
     } on CameraException catch (e) {
       debugPrint('Error occured while taking picture: $e');
       return null;
@@ -107,7 +112,18 @@ class _CameraPageState extends State<CameraScreen> {
                         constraints: const BoxConstraints(),
                         icon: const Icon(Icons.circle, color: Colors.white),
                       )),
-                      const Spacer(),
+                      //const Spacer(),
+                      Expanded(
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(
+                            Icons.cancel_sharp,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
                     ]),
               )),
         ]),
