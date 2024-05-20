@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:jamapp/screens/preview_screen.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -12,6 +13,30 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraPageState extends State<CameraScreen> {
+  final picker = ImagePicker();
+  //Image Picker function to get image from gallery
+  Future getImageFromGallery() async {
+    try {
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PreviewScreen(
+                    picture: pickedFile!,
+                  ))).then((result) {
+        if (result != null) {
+          Navigator.pop(context, result);
+        }
+      });
+      //Navigator.pop(context);
+    } on Exception catch (e) {
+      final snackbar =
+          SnackBar(content: Text('Error occured while selecting picture: $e'));
+      ScaffoldMessenger.of(context).showSnackBar(snackbar);
+      return null;
+    }
+  }
+
   late CameraController _cameraController;
   bool _isRearCameraSelected = true;
 
@@ -70,6 +95,19 @@ class _CameraPageState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: false,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.arrow_back,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Stack(children: [
           (_cameraController.value.isInitialized)
@@ -115,11 +153,10 @@ class _CameraPageState extends State<CameraScreen> {
                       //const Spacer(),
                       Expanded(
                         child: IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
+                          onPressed: getImageFromGallery,
+                          iconSize: 40,
                           icon: Icon(
-                            Icons.cancel_sharp,
+                            Icons.insert_photo_rounded,
                             color: Colors.white,
                           ),
                         ),

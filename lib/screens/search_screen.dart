@@ -1,8 +1,8 @@
 import 'dart:io';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:jamapp/screens/camera_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -14,12 +14,22 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<SearchScreen> {
+  File? _image;
+
   XFile? _picture;
   Future requestPermission() async {
-    final permission = Permission.camera;
+    final permissionCamera = Permission.camera;
+    final permissionGallery = Permission.photos;
+    final p1 = Permission.manageExternalStorage;
 
-    if (await permission.isDenied) {
-      await permission.request();
+    if (await permissionCamera.isDenied) {
+      await permissionCamera.request();
+    }
+    if (await permissionGallery.isDenied) {
+      await permissionGallery.request();
+    }
+    if (await p1.isDenied) {
+      await p1.request();
     }
   }
 
@@ -68,6 +78,16 @@ class _HomeScreenState extends State<SearchScreen> {
               _picture != null
                   ? Image.file(
                       File(_picture!.path),
+                      width: 200,
+                      height: 200,
+                    )
+                  : const SizedBox(
+                      width: 0,
+                      height: 0,
+                    ),
+              _image != null
+                  ? Image.file(
+                      File(_image!.path),
                       width: 200,
                       height: 200,
                     )
