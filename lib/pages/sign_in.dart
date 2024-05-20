@@ -10,6 +10,13 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  // email controller
+  final _emailController = TextEditingController();
+  // şifre controller
+  final _passwordController = TextEditingController();
+  // şifre görünür yap
+  bool _passwordVisible = false;
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -21,10 +28,6 @@ class _SignInState extends State<SignIn> {
     Color textColor1 = const Color(0xff353047);
     //Color textColor2 = const Color(0xff6F6B7A);
     Color buttonColor = Colors.purple;
-    // email controller
-    final _emailController = TextEditingController();
-    // şifre controller
-    final _passwordController = TextEditingController();
 
     Future signIn() async {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -67,8 +70,26 @@ class _SignInState extends State<SignIn> {
 
             SizedBox(height: size.height * 0.04),
             // for username and password
-            myTextField("E-mail", Colors.white, false, _emailController),
-            myTextField("Şifre", Colors.black26, true, _passwordController),
+            myTextField(
+              "E-mail",
+              Colors.white,
+              false,
+              _emailController,
+              false,
+              null,
+            ),
+            myTextField(
+              "Şifre",
+              Colors.black26,
+              true,
+              _passwordController,
+              _passwordVisible,
+              () {
+                setState(() {
+                  _passwordVisible = !_passwordVisible;
+                });
+              },
+            ),
             const SizedBox(height: 10),
             SizedBox(height: size.height * 0.04),
             Padding(
@@ -139,7 +160,13 @@ class _SignInState extends State<SignIn> {
   }
 
   Container myTextField(
-      String hint, Color color, bool type, TextEditingController controller) {
+    String hint,
+    Color color,
+    bool type,
+    TextEditingController controller,
+    bool obscureTextToggle,
+    VoidCallback? onSuffixIconPressed,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 25,
@@ -147,7 +174,7 @@ class _SignInState extends State<SignIn> {
       ),
       child: TextField(
         controller: controller,
-        obscureText: type,
+        obscureText: type ? !obscureTextToggle : false,
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 20,
@@ -159,16 +186,36 @@ class _SignInState extends State<SignIn> {
               borderSide: BorderSide.none,
               borderRadius: BorderRadius.circular(15),
             ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(
+                color: Colors.transparent,
+                width: 2.0,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(
+                color: Colors.purple,
+                width: 2.0,
+              ),
+            ),
             hintText: hint,
-            //label: Text(hint),
             hintStyle: const TextStyle(
               color: Colors.black45,
               fontSize: 19,
             ),
-            suffixIcon: Icon(
-              Icons.visibility_off_outlined,
-              color: color,
-            )),
+            suffixIcon: type
+                ? GestureDetector(
+                    onTap: onSuffixIconPressed,
+                    child: Icon(
+                      obscureTextToggle
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                      color: color,
+                    ),
+                  )
+                : null),
       ),
     );
   }

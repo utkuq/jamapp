@@ -10,6 +10,12 @@ class ProfileScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<ProfileScreen> {
   final user = FirebaseAuth.instance.currentUser!;
+  Future signOut() async {
+    await FirebaseAuth.instance.signOut();
+    await Navigator.pushNamed(context, '/onboarding');
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -22,9 +28,7 @@ class _HomeScreenState extends State<ProfileScreen> {
         appBar: AppBar(title: Text("PROFILE"), actions: [
           IconButton(
             icon: Icon(Icons.logout),
-            onPressed: () {
-              FirebaseAuth.instance.signOut();
-            },
+            onPressed: signOut,
           ),
         ]),
         body: Center(

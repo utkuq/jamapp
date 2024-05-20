@@ -41,7 +41,9 @@ class MenuScreenState extends State<TabViewScreen> {
                   indicator: UnderlineTabIndicator(
                     borderSide:
                         BorderSide(color: Color(0xff8c52ff), width: 4.0),
-                    insets: EdgeInsets.only(bottom: 44),
+                    insets: EdgeInsets.only(
+                      bottom: 44,
+                    ),
                   ),
                   unselectedLabelColor: Colors.grey,
                 ),

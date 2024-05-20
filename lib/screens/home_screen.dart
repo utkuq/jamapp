@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:jamapp/widgets/country_image.dart';
 import 'package:jamapp/widgets/splash_card.dart';
 
@@ -20,7 +21,11 @@ class _HomeScreenState extends State<HomeScreen> {
       home: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text("HOME"),
+          centerTitle: true,
+          title: Text(
+            "Lezzet Atlası",
+            style: GoogleFonts.pacifico(fontSize: 27),
+          ),
         ),
         body: SingleChildScrollView(
           child: Column(

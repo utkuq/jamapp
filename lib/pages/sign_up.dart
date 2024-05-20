@@ -17,6 +17,10 @@ class _SignUpState extends State<SignUp> {
   // şifre kontrol
   final _passwordCheckController = TextEditingController();
 
+  // şifre görünür yap
+  bool _passwordVisible = false;
+  bool _passwordCheckVisible = false;
+
   bool passwordConfirmed() {
     if (_passwordCheckController.text.trim() ==
         _passwordController.text.trim()) {
@@ -43,7 +47,7 @@ class _SignUpState extends State<SignUp> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Şifreler uyuşmuyor')),
+        SnackBar(content: const Text('Şifreler uyuşmuyor')),
       );
     }
   }
@@ -80,64 +84,91 @@ class _SignUpState extends State<SignUp> {
           ),
         ),
         child: SafeArea(
-            child: ListView(
-          children: [
-            SizedBox(height: size.height * 0.03),
-            Text("Kayıt Ol",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.pacifico(fontSize: 37, color: textColor1)),
-            const SizedBox(height: 15),
-            SizedBox(height: size.height * 0.04),
-            // for username and password
-            myTextField("E-mail", Colors.white, false, _emailController),
-            myTextField("Şifre", Colors.black26, true, _passwordController),
-            myTextField("Şifre (Tekrar)", Colors.black26, true,
-                _passwordCheckController),
-            const SizedBox(height: 10),
-            SizedBox(height: size.height * 0.04),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25),
-              child: Column(
-                children: [
-                  // for sign in button
-                  GestureDetector(
-                    onTap: signUp,
-                    child: Container(
-                      width: size.width,
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      decoration: BoxDecoration(
-                        color: buttonColor,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          "Kayıt Ol",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 22,
+            child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: size.height * 0.03),
+                Text("Kayıt Ol",
+                    textAlign: TextAlign.center,
+                    style:
+                        GoogleFonts.pacifico(fontSize: 37, color: textColor1)),
+                const SizedBox(height: 15),
+                SizedBox(height: size.height * 0.04),
+                // for username and password
+                myTextField("E-mail", Colors.white, false, _emailController,
+                    false, null),
+                myTextField(
+                  "Şifre",
+                  Colors.black26,
+                  true,
+                  _passwordController,
+                  _passwordVisible,
+                  () {
+                    setState(() {
+                      _passwordVisible = !_passwordVisible;
+                    });
+                  },
+                ),
+                myTextField(
+                  "Şifre (Tekrar)",
+                  Colors.black26,
+                  true,
+                  _passwordCheckController,
+                  _passwordCheckVisible,
+                  () {
+                    setState(() {
+                      _passwordCheckVisible = !_passwordCheckVisible;
+                    });
+                  },
+                ),
+                const SizedBox(height: 10),
+                SizedBox(height: size.height * 0.04),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Column(
+                    children: [
+                      // for sign in button
+                      GestureDetector(
+                        onTap: signUp,
+                        child: Container(
+                          width: size.width,
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          decoration: BoxDecoration(
+                            color: buttonColor,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              "Kayıt Ol",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 22,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Zaten bir hesabınız var mı?"),
-                      TextButton(
-                        onPressed: () async {
-                          await Navigator.pushNamed(context, '/signin');
-                          Navigator.pop(context);
-                        },
-                        child: Text("Giriş Yapın"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Zaten bir hesabınız var mı?"),
+                          TextButton(
+                            onPressed: () async {
+                              await Navigator.pushNamed(context, '/signin');
+                              Navigator.pop(context);
+                            },
+                            child: const Text("Giriş Yapın"),
+                          )
+                        ],
                       )
                     ],
-                  )
-                ],
-              ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         )),
       ),
     );
@@ -168,6 +199,8 @@ class _SignUpState extends State<SignUp> {
     Color color,
     bool type,
     TextEditingController controller,
+    bool obscureTextToggle,
+    VoidCallback? onSuffixIconPressed,
   ) {
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -176,7 +209,7 @@ class _SignUpState extends State<SignUp> {
       ),
       child: TextField(
         controller: controller,
-        obscureText: type,
+        obscureText: type ? !obscureTextToggle : false,
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 20,
@@ -188,15 +221,36 @@ class _SignUpState extends State<SignUp> {
               borderSide: BorderSide.none,
               borderRadius: BorderRadius.circular(15),
             ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(
+                color: Colors.transparent,
+                width: 2.0,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(
+                color: Colors.purple,
+                width: 2.0,
+              ),
+            ),
             hintText: hint,
             hintStyle: const TextStyle(
               color: Colors.black45,
               fontSize: 19,
             ),
-            suffixIcon: Icon(
-              Icons.visibility_off_outlined,
-              color: color,
-            )),
+            suffixIcon: type
+                ? GestureDetector(
+                    onTap: onSuffixIconPressed,
+                    child: Icon(
+                      obscureTextToggle
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                      color: color,
+                    ),
+                  )
+                : null),
       ),
     );
   }
