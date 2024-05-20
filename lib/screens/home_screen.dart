@@ -77,6 +77,102 @@ class _HomeScreenState extends State<HomeScreen> {
                 yemek4:
                     "Ratatouille: Patlıcan, kabak, biber, domates, soğan ve sarımsak gibi sebzelerle yapılan bir tür sebze güveçtir. Özellikle Provence mutfağının bir parçasıdır.",
               ),
+              SizedBox(
+                height: 20,
+              ),
+              CountryImage(thumbnailUrl: "assets/resimler/turkiye.jpg"),
+              SplashCard(
+                ulkeAdi: "Türkiye",
+                ulkeEmoji: "🇹🇷",
+                yemek1:
+                    "Kebaplar: Türk mutfağının en bilinen yemeklerinden biridir. Adana kebap, Urfa kebap, İskender kebap, şiş kebap gibi birçok çeşidi vardır. Genellikle etin baharatlarla marine edilip ızgarada pişirilmesiyle yapılır.",
+                yemek2:
+                    "Dolma ve Sarma: Sebzelerin veya asma yaprağının içine pirinç, kıyma, soğan ve baharatlarla hazırlanan harcın doldurulmasıyla yapılan yemeklerdir. Biber dolması, patlıcan dolması ve yaprak sarma en bilinen çeşitlerindendir.",
+                yemek3:
+                    "Baklava: İnce yufka katmanlarının arasına ceviz, fındık veya antep fıstığı konulup şerbetle tatlandırılan geleneksel bir tatlıdır. Türkiye'nin en bilinen tatlılarından biridir",
+                yemek4:
+                    "Lahmacun: İnce hamurun üzerine kıyma, soğan, domates ve baharat karışımı sürülerek taş fırında pişirilen bir tür Türk pizzasıdır. Genellikle limon ve maydanoz ile servis edilir",
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              CountryImage(thumbnailUrl: "assets/resimler/japonya.jpg"),
+              SplashCard(
+                ulkeAdi: "Japonya",
+                ulkeEmoji: "🇯🇵",
+                yemek1:
+                    "Sushi: Japon mutfağının en bilinen yemeklerinden biridir. Çeşitli malzemelerle yapılan, özellikle çiğ balık ve deniz ürünleri ile hazırlanan, sirkeli pirinç kullanılarak yapılan bir yemektir. Nigiri, maki, sashimi gibi çeşitleri vardır.",
+                yemek2:
+                    "Ramen: Çin kökenli bir yemektir ancak Japonya'da oldukça popülerdir. Buğday unundan yapılan erişteler, et veya deniz ürünleri bazlı bir et suyu içinde servis edilir. Üzerine genellikle dilimlenmiş et, deniz yosunu, soya sosu ve yeşil soğan gibi malzemeler eklenir.",
+                yemek3:
+                    "Tempura: Deniz ürünleri ve sebzelerin hafif bir hamura batırılarak kızartılması ile yapılan bir yemektir. Tempura, genellikle sıcak bir şekilde servis edilir ve yanında genellikle dipping sosu ile sunulur.",
+                yemek4:
+                    "Takoyaki: Küçük, yuvarlak ve içi ahtapot parçaları ile dolu olan hamur toplarıdır. Üzerine takoyaki sosu, mayonez, yeşil soğan ve bonito (kurutulmuş balık) parçaları serpilir.",
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              CountryImage(thumbnailUrl: "assets/resimler/hindistan.jpg"),
+              SplashCard(
+                ulkeAdi: "Hindistan",
+                ulkeEmoji: "🇮🇳",
+                yemek1:
+                    "Biryani: Biryani, pirinç, et (tavuk, kuzu veya keçi), baharatlar, soğan ve bazen sebzelerin bir araya getirilmesiyle yapılan, zengin ve aromatik bir pilav yemeğidir.",
+                yemek2:
+                    "Butter Chicken (Tavuk Masala): Tavuk parçalarının tereyağı, krema, domates sosu ve baharatlarla pişirilip servis edildiği nefis bir yemektir.",
+                yemek3:
+                    "Tandoori Tavuk: Tandoori tavuk, hint baharatları ve yoğurt ile marine edilmiş, ardından tandırda pişirilmiş tavuktur. Hint mutfağının en ünlü lezzetlerinden biridir.",
+                yemek4:
+                    "Dal Tadka: Bujet mercimek veya sarı mercimekten yapılan ve tadını veren baharatlar ve yağda kavrulmuş sarımsak ile birleştirilen bir çeşit mercimek yemeğidir.",
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              CountryImage(thumbnailUrl: "assets/resimler/meksika.jpg"),
+              SplashCard(
+                ulkeAdi: "Meksika",
+                ulkeEmoji: "🇲🇽",
+                yemek1:
+                    "Taco:Meksika'nın en ikonik yiyeceklerinden biridir. Taco, mısır veya buğday tortillası ile doldurulmuş bir çeşit dolgudur. Dolgu genellikle biftek, tavuk, domuz eti veya sebzeler olabilir ve ardından salsa, guacamole, peynir ve marul gibi garnitürlerle servis edilir.",
+                yemek2:
+                    "Burrito: Genellikle büyük bir un tortillasına sarılmış bir yemektir. Burrito, içinde et (biftek, tavuk veya domuz eti), pirinç, fasulye, sebzeler, peynir ve bazen salsa veya guacamole gibi ek malzemeler içerir.",
+                yemek3:
+                    "Fajita: Genellikle biftek, tavuk veya karidesle yapılan bir yemektir. Dilimlenmiş et ve sebzeler, genellikle sıcak bir tavada servis edilir ve tortillas ile sarılarak yenir. Üzerine salsa, peynir, krema ve guacamole gibi garnitürler eklenir.",
+                yemek4:
+                    "Quesadilla: İki mısır veya buğday tortillası arasına peynir, et veya sebzeler konularak yapılır ve daha sonra tavada kızartılır. Genellikle salsa ve guacamole ile servis edilir.",
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              CountryImage(thumbnailUrl: "assets/resimler/lubnan.jpg"),
+              SplashCard(
+                ulkeAdi: "Lübnan",
+                ulkeEmoji: "🇱🇧",
+                yemek1:
+                    "Hummus: Nohut, tahin, limon suyu, sarımsak ve zeytinyağı ile yapılan bu ezme, Lübnan mutfağının en bilinen mezesidir. Genellikle pide ekmeği ile servis edilir",
+                yemek2:
+                    "Tabbouleh: İnce bulgur, maydanoz, nane, domates, soğan, limon suyu ve zeytinyağı ile yapılan bir salatadır. Hafif ve ferahlatıcı bir lezzete sahiptir.",
+                yemek3:
+                    "Falafel: Nohut veya bakla, soğan, sarımsak ve baharatlarla yapılan ve derin yağda kızartılan küçük köftelerdir. Genellikle tahin sosu ve salata ile servis edilir.",
+                yemek4:
+                    "Shawarma: İnce dilimlenmiş etin (genellikle kuzu veya tavuk) baharatlarla marine edilip dikey bir döner ocağında pişirilmesiyle yapılan bir yemektir. Lavaş ekmeği içinde sebzeler ve soslarla birlikte servis edilir.",
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              CountryImage(thumbnailUrl: "assets/resimler/gurcistan.jpg"),
+              SplashCard(
+                ulkeAdi: "Gürcistan",
+                ulkeEmoji: "🇬🇪",
+                yemek1:
+                    "Haçapuri (Khachapuri): Peynirle doldurulmuş geleneksel bir ekmek türüdür. Çeşitleri arasında Adjaruli (açık kayık şeklinde, üzerine yumurta kırılarak servis edilen) ve Imeruli (kapalı ve yuvarlak) haçapuri bulunur.",
+                yemek2:
+                    "Hinkali (Khinkali): Baharatlı et veya sebze dolgulu büyük mantılardır. Genellikle sıcak ve sos olmadan servis edilir.",
+                yemek3:
+                    "Çakapuli (Chakapuli): Genellikle ilkbaharda yapılan, kuzu eti veya dana eti, taze erik, yeşil otlar ve beyaz şarapla hazırlanan bir tür et yemeğidir.",
+                yemek4:
+                    "4.	Badrijani Nigvzit: Cevizle doldurulmuş patlıcan rulolarıdır. Genellikle nar taneleri ile süslenir ve soğuk olarak servis edilir.",
+              ),
             ],
           ),
         ),
