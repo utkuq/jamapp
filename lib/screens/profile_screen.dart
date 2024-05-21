@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -25,12 +26,18 @@ class _HomeScreenState extends State<ProfileScreen> {
       ),
       home: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(title: Text("PROFILE"), actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: signOut,
-          ),
-        ]),
+        appBar: AppBar(
+            centerTitle: true,
+            title: Text(
+              "Profiliniz",
+              style: GoogleFonts.pacifico(fontSize: 27),
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.logout),
+                onPressed: signOut,
+              ),
+            ]),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -42,7 +49,8 @@ class _HomeScreenState extends State<ProfileScreen> {
               Text(
                 "olarak giriş yapıldı",
                 style: TextStyle(fontSize: 20),
-              )
+              ),
+              Text("HelloWorld(print!)")
             ],
           ),
         ),

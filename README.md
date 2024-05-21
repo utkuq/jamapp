@@ -1,16 +1,13 @@
-# jamapp
+# Lezzet Atlası
 
-A new Flutter project.
+## Önemli Not (OUA GAME JAM)
+##### (Seçenek 1)
+Uygulamayı test etmek için ```/lib/gemini/``` klasörü altında ```api_keys.dart``` isimli bir dosya oluşturunuz. Daha sonra oluşturduğunuz dosya içerisine<br>
 
-## Getting Started
+```dart
+String api_key = "API ANAHTARINIZ";
+```
+şeklinde API anahtarınızı girerek test edebilirsiniz.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+##### (Seçenek 2)
+Releases kısmından en güncel ```.apk``` dosyasını indirerek test edebilirsiniz.
