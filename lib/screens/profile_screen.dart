@@ -50,7 +50,6 @@ class _HomeScreenState extends State<ProfileScreen> {
                 "olarak giriş yapıldı",
                 style: TextStyle(fontSize: 20),
               ),
-              Text("HelloWorld(print!)")
             ],
           ),
         ),

@@ -28,29 +28,9 @@ class OnboardingScreen extends StatelessWidget {
                 ),
               ),
               PageViewModel(
-                title: "Title of custom body page",
-                bodyWidget: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Click on "),
-                        Icon(Icons.edit),
-                        Text(" to edit a post"),
-                      ],
-                    ),
-                    SizedBox(
-                        height:
-                            20), // Optional: Adds space between the text and the image
-                    Center(child: Icon(Icons.android)),
-                  ],
-                ),
-              ),
-              PageViewModel(
                 decoration: PageDecoration(
-                  titleTextStyle: GoogleFonts.pacifico(fontSize: 30),
+                  titleTextStyle:
+                      GoogleFonts.pacifico(fontSize: 30, color: Colors.white),
                 ),
                 title: "Atlasbot Burada!",
                 body:
@@ -62,13 +42,14 @@ class OnboardingScreen extends StatelessWidget {
               ),
               PageViewModel(
                 decoration: PageDecoration(
-                  titleTextStyle: GoogleFonts.pacifico(fontSize: 30),
+                  titleTextStyle:
+                      GoogleFonts.pacifico(fontSize: 30, color: Colors.white),
                 ),
                 title: "Hadi Başlayalım!",
                 body: "",
                 image: Center(
                     child:
-                        Icon(Icons.thumb_up, size: 100, color: Colors.black)),
+                        Icon(Icons.thumb_up, size: 100, color: Colors.white)),
               ),
             ],
             onDone: () {
