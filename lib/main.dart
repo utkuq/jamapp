@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:jamapp/pages/sign_in.dart';
-import 'package:jamapp/pages/sign_up.dart';
+import 'package:jamapp/firebase_options.dart';
+import 'package:jamapp/firebase/sign_in.dart';
+import 'package:jamapp/firebase/sign_up.dart';
 import 'package:jamapp/screens/auth.dart';
 import 'screens/onboarding_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,7 +10,7 @@ import 'screens/tab_view_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-      //options: DefaultFirebaseOptions.currentPlatform,
+    options: DefaultFirebaseOptions.currentPlatform,
       );
   runApp(const MyApp());
 }

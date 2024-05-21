@@ -1,7 +1,12 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:jamapp/widgets/country_image.dart';
-import 'package:jamapp/widgets/splash_card.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:jamapp/firebase/firestore.dart';
+import 'package:jamapp/widgets/country_overview.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,46 +16,253 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // final user = FirebaseAuth.instance.currentUser!;
+  // firestore service
+  final FirestoreService firestoreService = FirestoreService();
 
-  // final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  String countryImageUrl1 = '';
+  // text controllers
+  TextEditingController countryName_controller = TextEditingController();
+  TextEditingController countryEmoji_controller = TextEditingController();
+  TextEditingController cousine_1_controller = TextEditingController();
+  TextEditingController cousine_2_controller = TextEditingController();
+  TextEditingController cousine_3_controller = TextEditingController();
+  TextEditingController cousine_4_controller = TextEditingController();
 
-  // Future<List<Map<String, dynamic>>> getDocuments() async {
-  //   CollectionReference collectionRef = _firestore.collection('countries');
-  //   List<Map<String, dynamic>> documents = [];
-  //   try {
-  //     QuerySnapshot querySnapshot = await collectionRef.get();
-  //     // Belgeleri döngü ile işle
-  //     for (QueryDocumentSnapshot doc in querySnapshot.docs) {
-  //       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+  void openCountryBox() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        actions: [
+          TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('İptal')),
+          TextButton(
+              onPressed: () {
+                try {
+                  firestoreService.addCountry(
+                    countryImageUrl1,
+                    countryName_controller.text,
+                    countryEmoji_controller.text,
+                    cousine_1_controller.text,
+                    cousine_2_controller.text,
+                    cousine_3_controller.text,
+                    cousine_4_controller.text,
+                  );
 
-  //       // Her belge için alanları spesifik değişkenlere ata
-  //       var _ulkeAdi = data['ulkeAdi'];
-  //       var _ulkeEmoji = data['ulkeEmoji'];
-  //       var _yemek1 = data['yemek1'];
-  //       var _yemek2 = data['yemek2'];
-  //       var _yemek3 = data['yemek3'];
-  //       var _yemek4 = data['yemek4'];
-  //       var _imagePath = data['imagePath'];
+                  // clear textfields
+                  countryName_controller.clear();
+                  countryEmoji_controller.clear();
+                  cousine_1_controller.clear();
+                  cousine_2_controller.clear();
+                  cousine_3_controller.clear();
+                  cousine_4_controller.clear();
+                  Navigator.pop(context);
+                } catch (error) {
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text(error.toString())));
+                }
+              },
+              child: Text('Kaydet')),
+        ],
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  // image controller
+                  ImagePicker imagePicker = ImagePicker();
+                  XFile? countryImage =
+                      await imagePicker.pickImage(source: ImageSource.gallery);
+                  if (countryImage != null) {
+                    // upload image to firebase
+                    String uniqueFileName =
+                        DateTime.now().millisecondsSinceEpoch.toString();
 
-  //       documents.add({
-  //         'ulkeAdi': _ulkeAdi,
-  //         'ulkeEmoji': _ulkeEmoji,
-  //         'yemek1': _yemek1,
-  //         'yemek2': _yemek2,
-  //         'yemek3': _yemek3,
-  //         'yemek4': _yemek4,
-  //         'imagePath': _imagePath,
-  //       });
-  //     }
-  //   } catch (e) {
-  //     print('Hata: $e');
-  //   }
-  //   return documents;
-  // }
+                    // root'tan referans
+                    Reference referenceRoot = FirebaseStorage.instance.ref();
+                    Reference referenceDirImages =
+                        referenceRoot.child('countries');
 
-  // // document id'ler
-  // List<String> docIDs = [];
+                    // kaydedilen görselin referansı
+                    Reference referenceImageToUpload =
+                        referenceDirImages.child(uniqueFileName);
+
+                    try {
+                      await referenceImageToUpload
+                          .putFile(File(countryImage.path));
+                      String countryImageUrl =
+                          await referenceImageToUpload.getDownloadURL();
+                      setState(() {
+                        countryImageUrl1 = countryImageUrl;
+                      });
+                    } catch (error) {}
+                  } else {
+                    String? imagePath = null;
+                    print(imagePath);
+                    print(countryImage!.path);
+                    print(
+                        "==================================================================");
+                  }
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.camera_alt),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text('Ülke Görseli'),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: TextField(
+                  controller: countryName_controller,
+                  decoration: InputDecoration(
+                    label: Text("Ülke Adı"),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        color: Colors.grey,
+                        width: 2.0,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        color: Colors.purple,
+                        width: 2.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: TextField(
+                  controller: countryEmoji_controller,
+                  decoration: InputDecoration(
+                    label: Text("Ülke Bayrağı Emojisi"),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        color: Colors.grey,
+                        width: 2.0,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        color: Colors.purple,
+                        width: 2.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: TextField(
+                  controller: cousine_1_controller,
+                  decoration: InputDecoration(
+                    label: Text("Yemek 1"),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        color: Colors.grey,
+                        width: 2.0,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        color: Colors.purple,
+                        width: 2.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: TextField(
+                  controller: cousine_2_controller,
+                  decoration: InputDecoration(
+                    label: Text("Yemek 2"),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        color: Colors.grey,
+                        width: 2.0,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        color: Colors.purple,
+                        width: 2.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: TextField(
+                  controller: cousine_3_controller,
+                  decoration: InputDecoration(
+                    label: Text("Yemek 3"),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        color: Colors.grey,
+                        width: 2.0,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        color: Colors.purple,
+                        width: 2.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: TextField(
+                  controller: cousine_4_controller,
+                  decoration: InputDecoration(
+                    label: Text("Yemek 4"),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        color: Colors.grey,
+                        width: 2.0,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        color: Colors.purple,
+                        width: 2.0,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,158 +280,52 @@ class _HomeScreenState extends State<HomeScreen> {
             style: GoogleFonts.pacifico(fontSize: 27),
           ),
         ),
-        body: Container(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                // ==========================================================
-                CountryImage(
-                  thumbnailUrl: "assets/resimler/italya.jpg",
-                ),
-                SplashCard(
-                  ulkeAdi: "İtalya",
-                  ulkeEmoji: "🇮🇹",
-                  yemek1:
-                      "Pizza: İtalya'nın dünyaca ünlü yemeği. En klasik hali olan Margherita, domates, mozzarella peyniri ve taze fesleğen ile yapılır.",
-                  yemek2:
-                      "Makarna: Çeşitli makarna türleri ve sosları ile İtalya mutfağının temel taşlarından biridir.",
-                  yemek3:
-                      "Risotto: Kremsi bir yapıya sahip, genellikle sebze, et veya deniz ürünleri ile zenginleştirilmiş İtalyan pirinç yemeğidir",
-                  yemek4:
-                      "Tiramisu: İtalyan mutfağının en ünlü tatlılarından biridir. Mascarpone peyniri, kahve, kakao ve bisküvi katmanlarından oluşur.",
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                CountryImage(thumbnailUrl: "assets/resimler/avusturya.png"),
-                SplashCard(
-                  ulkeAdi: "Avusturya",
-                  ulkeEmoji: "🇦🇹",
-                  yemek1:
-                      "Wiener Schnitzel: Avusturya'nın en ünlü yemeği olan Wiener Schnitzel, ince dövülmüş dana etinin pane edilerek kızartılmasıyla hazırlanır. Genellikle limon dilimi ve patates salatası ile servis edilir.",
-                  yemek2:
-                      "Tafelspitz: Bu yemek, haşlanmış dana eti ve çeşitli sebzelerden oluşur. Genellikle elma yahnisi ve frenk turpu ile servis edilir.",
-                  yemek3:
-                      "Apfelstrudel: İnce yufkadan yapılmış elmalı strudel, tarçın, şeker ve bazen kuru üzümle doldurulur. Üzerine pudra şekeri serpilir ve genellikle vanilyalı dondurma veya krem şanti ile servis edilir.",
-                  yemek4:
-                      "Gulasch: Macar mutfağından etkilenen bu yemek, et, soğan, kırmızı biber ve diğer baharatlarla yapılan doyurucu bir yahni türüdür.",
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                CountryImage(thumbnailUrl: "assets/resimler/fransa.jpg"),
-                SplashCard(
-                  ulkeAdi: "Fransa",
-                  ulkeEmoji: "🇫🇷",
-                  yemek1:
-                      "Croissant: Fransız kahvaltılarının vazgeçilmezi olan bu tereyağlı ve kat kat hamurdan yapılan kruvasan, çıtır ve lezzetli bir hamur işidir.",
-                  yemek2:
-                      "Coq au Vin: Tavuk etinin kırmızı şarap, mantar, soğan, sarımsak ve domuz pastırması ile pişirilmesiyle yapılan bu yemek, Fransız mutfağının klasiklerinden biridir.",
-                  yemek3:
-                      "Bouillabaisse: Provence bölgesine özgü olan bu balık çorbası, çeşitli balıklar, deniz ürünleri, safran ve baharatlarla yapılır. Genellikle rouille sosu ve kruton ile servis edilir.",
-                  yemek4:
-                      "Ratatouille: Patlıcan, kabak, biber, domates, soğan ve sarımsak gibi sebzelerle yapılan bir tür sebze güveçtir. Özellikle Provence mutfağının bir parçasıdır.",
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                CountryImage(thumbnailUrl: "assets/resimler/turkiye.jpg"),
-                SplashCard(
-                  ulkeAdi: "Türkiye",
-                  ulkeEmoji: "🇹🇷",
-                  yemek1:
-                      "Kebaplar: Türk mutfağının en bilinen yemeklerinden biridir. Adana kebap, Urfa kebap, İskender kebap, şiş kebap gibi birçok çeşidi vardır. Genellikle etin baharatlarla marine edilip ızgarada pişirilmesiyle yapılır.",
-                  yemek2:
-                      "Dolma ve Sarma: Sebzelerin veya asma yaprağının içine pirinç, kıyma, soğan ve baharatlarla hazırlanan harcın doldurulmasıyla yapılan yemeklerdir. Biber dolması, patlıcan dolması ve yaprak sarma en bilinen çeşitlerindendir.",
-                  yemek3:
-                      "Baklava: İnce yufka katmanlarının arasına ceviz, fındık veya antep fıstığı konulup şerbetle tatlandırılan geleneksel bir tatlıdır. Türkiye'nin en bilinen tatlılarından biridir",
-                  yemek4:
-                      "Lahmacun: İnce hamurun üzerine kıyma, soğan, domates ve baharat karışımı sürülerek taş fırında pişirilen bir tür Türk pizzasıdır. Genellikle limon ve maydanoz ile servis edilir",
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                CountryImage(thumbnailUrl: "assets/resimler/japonya.jpg"),
-                SplashCard(
-                  ulkeAdi: "Japonya",
-                  ulkeEmoji: "🇯🇵",
-                  yemek1:
-                      "Sushi: Japon mutfağının en bilinen yemeklerinden biridir. Çeşitli malzemelerle yapılan, özellikle çiğ balık ve deniz ürünleri ile hazırlanan, sirkeli pirinç kullanılarak yapılan bir yemektir. Nigiri, maki, sashimi gibi çeşitleri vardır.",
-                  yemek2:
-                      "Ramen: Çin kökenli bir yemektir ancak Japonya'da oldukça popülerdir. Buğday unundan yapılan erişteler, et veya deniz ürünleri bazlı bir et suyu içinde servis edilir. Üzerine genellikle dilimlenmiş et, deniz yosunu, soya sosu ve yeşil soğan gibi malzemeler eklenir.",
-                  yemek3:
-                      "Tempura: Deniz ürünleri ve sebzelerin hafif bir hamura batırılarak kızartılması ile yapılan bir yemektir. Tempura, genellikle sıcak bir şekilde servis edilir ve yanında genellikle dipping sosu ile sunulur.",
-                  yemek4:
-                      "Takoyaki: Küçük, yuvarlak ve içi ahtapot parçaları ile dolu olan hamur toplarıdır. Üzerine takoyaki sosu, mayonez, yeşil soğan ve bonito (kurutulmuş balık) parçaları serpilir.",
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                CountryImage(thumbnailUrl: "assets/resimler/hindistan.jpg"),
-                SplashCard(
-                  ulkeAdi: "Hindistan",
-                  ulkeEmoji: "🇮🇳",
-                  yemek1:
-                      "Biryani: Biryani, pirinç, et (tavuk, kuzu veya keçi), baharatlar, soğan ve bazen sebzelerin bir araya getirilmesiyle yapılan, zengin ve aromatik bir pilav yemeğidir.",
-                  yemek2:
-                      "Butter Chicken (Tavuk Masala): Tavuk parçalarının tereyağı, krema, domates sosu ve baharatlarla pişirilip servis edildiği nefis bir yemektir.",
-                  yemek3:
-                      "Tandoori Tavuk: Tandoori tavuk, hint baharatları ve yoğurt ile marine edilmiş, ardından tandırda pişirilmiş tavuktur. Hint mutfağının en ünlü lezzetlerinden biridir.",
-                  yemek4:
-                      "Dal Tadka: Bujet mercimek veya sarı mercimekten yapılan ve tadını veren baharatlar ve yağda kavrulmuş sarımsak ile birleştirilen bir çeşit mercimek yemeğidir.",
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                CountryImage(thumbnailUrl: "assets/resimler/meksika.jpg"),
-                SplashCard(
-                  ulkeAdi: "Meksika",
-                  ulkeEmoji: "🇲🇽",
-                  yemek1:
-                      "Taco:Meksika'nın en ikonik yiyeceklerinden biridir. Taco, mısır veya buğday tortillası ile doldurulmuş bir çeşit dolgudur. Dolgu genellikle biftek, tavuk, domuz eti veya sebzeler olabilir ve ardından salsa, guacamole, peynir ve marul gibi garnitürlerle servis edilir.",
-                  yemek2:
-                      "Burrito: Genellikle büyük bir un tortillasına sarılmış bir yemektir. Burrito, içinde et (biftek, tavuk veya domuz eti), pirinç, fasulye, sebzeler, peynir ve bazen salsa veya guacamole gibi ek malzemeler içerir.",
-                  yemek3:
-                      "Fajita: Genellikle biftek, tavuk veya karidesle yapılan bir yemektir. Dilimlenmiş et ve sebzeler, genellikle sıcak bir tavada servis edilir ve tortillas ile sarılarak yenir. Üzerine salsa, peynir, krema ve guacamole gibi garnitürler eklenir.",
-                  yemek4:
-                      "Quesadilla: İki mısır veya buğday tortillası arasına peynir, et veya sebzeler konularak yapılır ve daha sonra tavada kızartılır. Genellikle salsa ve guacamole ile servis edilir.",
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                CountryImage(thumbnailUrl: "assets/resimler/lubnan.jpg"),
-                SplashCard(
-                  ulkeAdi: "Lübnan",
-                  ulkeEmoji: "🇱🇧",
-                  yemek1:
-                      "Hummus: Nohut, tahin, limon suyu, sarımsak ve zeytinyağı ile yapılan bu ezme, Lübnan mutfağının en bilinen mezesidir. Genellikle pide ekmeği ile servis edilir",
-                  yemek2:
-                      "Tabbouleh: İnce bulgur, maydanoz, nane, domates, soğan, limon suyu ve zeytinyağı ile yapılan bir salatadır. Hafif ve ferahlatıcı bir lezzete sahiptir.",
-                  yemek3:
-                      "Falafel: Nohut veya bakla, soğan, sarımsak ve baharatlarla yapılan ve derin yağda kızartılan küçük köftelerdir. Genellikle tahin sosu ve salata ile servis edilir.",
-                  yemek4:
-                      "Shawarma: İnce dilimlenmiş etin (genellikle kuzu veya tavuk) baharatlarla marine edilip dikey bir döner ocağında pişirilmesiyle yapılan bir yemektir. Lavaş ekmeği içinde sebzeler ve soslarla birlikte servis edilir.",
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                CountryImage(thumbnailUrl: "assets/resimler/gurcistan.jpg"),
-                SplashCard(
-                  ulkeAdi: "Gürcistan",
-                  ulkeEmoji: "🇬🇪",
-                  yemek1:
-                      "Haçapuri (Khachapuri): Peynirle doldurulmuş geleneksel bir ekmek türüdür. Çeşitleri arasında Adjaruli (açık kayık şeklinde, üzerine yumurta kırılarak servis edilen) ve Imeruli (kapalı ve yuvarlak) haçapuri bulunur.",
-                  yemek2:
-                      "Hinkali (Khinkali): Baharatlı et veya sebze dolgulu büyük mantılardır. Genellikle sıcak ve sos olmadan servis edilir.",
-                  yemek3:
-                      "Çakapuli (Chakapuli): Genellikle ilkbaharda yapılan, kuzu eti veya dana eti, taze erik, yeşil otlar ve beyaz şarapla hazırlanan bir tür et yemeğidir.",
-                  yemek4:
-                      "4.	Badrijani Nigvzit: Cevizle doldurulmuş patlıcan rulolarıdır. Genellikle nar taneleri ile süslenir ve soğuk olarak servis edilir.",
-                ),
-              ],
-            ),
-          ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: openCountryBox,
+          child: Icon(Icons.add),
         ),
+        body: StreamBuilder(
+            stream: firestoreService.getCountriesStream(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List countriesList = snapshot.data!.docs;
+
+                return ListView.builder(
+                  itemCount: countriesList.length,
+                  itemBuilder: (context, index) {
+                    // get each doc (ülke)
+                    DocumentSnapshot document = countriesList[index];
+                    String docID = document.id;
+
+                    // get country from each doc
+                    Map<String, dynamic> data =
+                        document.data() as Map<String, dynamic>;
+                    String countryName = data['ulkeAdi'];
+                    String countryEmoji = data['ulkeEmoji'];
+                    String cousine_1 = data['yemek1'];
+                    String cousine_2 = data['yemek2'];
+                    String cousine_3 = data['yemek3'];
+                    String cousine_4 = data['yemek4'];
+                    String countryImageUrl = data['imagePath'];
+
+                    // display stuff
+                    return ListTile(
+                      title: CountryOverview(
+                        imagePath: countryImageUrl,
+                        ulkeAdi: countryName,
+                        ulkeEmoji: countryEmoji,
+                        yemek1: cousine_1,
+                        yemek2: cousine_2,
+                        yemek3: cousine_3,
+                        yemek4: cousine_4,
+                      ),
+                    );
+                  },
+                );
+              } else {
+                return Text('Henüz ülke eklenmedi...');
+              }
+            }),
       ),
     );
   }

@@ -49,7 +49,7 @@ class CountryOverview extends StatelessWidget {
                 Colors.black.withOpacity(0.35),
                 BlendMode.multiply,
               ),
-              image: AssetImage(imagePath),
+              image: NetworkImage(imagePath),
               fit: BoxFit.cover,
             ),
           ),
